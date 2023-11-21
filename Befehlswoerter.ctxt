@@ -1,0 +1,10 @@
+#BlueJ class context
+comment0.target=Befehlswoerter
+comment0.text=\n\ Diese\ Klasse\ ist\ Teil\ der\ Anwendung\ "Die\ Welt\ von\ Zuul".\n\ "Die\ Welt\ von\ Zuul"\ ist\ ein\ sehr\ einfaches\ textbasiertes\ \n\ Adventure-Game.\n\ \n\ Diese\ Klasse\ h\u00E4lt\ eine\ Aufz\u00E4hlung\ aller\ Befehlsw\u00F6rter,\ die\ dem\n\ Spiel\ bekannt\ sind.\ Mit\ ihrer\ Hilfe\ werden\ eingetippte\ Befehle\n\ erkannt.\n\n\ @author\ \ Michael\ K\u00F6lling\ und\ David\ J.\ Barnes\n\ @version\ 2016.02.29\n
+comment1.params=
+comment1.target=Befehlswoerter()
+comment1.text=\n\ Konstruktor\ -\ initialisiere\ die\ Befehlsw\u00F6rter.\n
+comment2.params=eingabe
+comment2.target=boolean\ istBefehl(java.lang.String)
+comment2.text=\n\ Pr\u00FCfe,\ ob\ eine\ gegebene\ Zeichenkette\ ein\ g\u00FCltiger\n\ Befehl\ ist.\n\ @return\ 'true',\ wenn\ die\ gegebene\ Zeichenkette\ ein\ g\u00FCltiger\n\ Befehl\ ist,\ 'false'\ sonst.\n
+numComments=3
