@@ -9,11 +9,11 @@
  *  an ihr die Methode "spielen" aufgerufen werden.
  * 
  *  Diese Instanz erzeugt und initialisiert alle anderen Objekte
- *  der Anwendung: Sie legt alle Räume und einen Parser an und
+ *  der Anwendung: Sie legt alle Rï¿½ume und einen Parser an und
  *  startet das Spiel. Sie wertet auch die Befehle aus, die der
- *  Parser liefert, und sorgt für ihre Ausführung.
+ *  Parser liefert, und sorgt fï¿½r ihre Ausfï¿½hrung.
  * 
- * @author  Michael Kölling und David J. Barnes
+ * @author  Michael Kï¿½lling und David J. Barnes
  * @version 2016.02.29
  */
 
@@ -32,20 +32,20 @@ public class Spiel
     }
 
     /**
-     * Erzeuge alle Räume und verbinde ihre Ausgänge miteinander.
+     * Erzeuge alle Rï¿½ume und verbinde ihre Ausgï¿½nge miteinander.
      */
     private void raeumeAnlegen()
     {
         Raum draussen, hoersaal, cafeteria, labor, buero;
-      
-        // die Räume erzeugen
-        draussen = new Raum("vor dem Haupteingang der Universität");
+
+        // die Rï¿½ume erzeugen
+        draussen = new Raum("vor dem Haupteingang der Universitï¿½t");
         hoersaal = new Raum("in einem Vorlesungssaal");
         cafeteria = new Raum("in der Cafeteria der Uni");
         labor = new Raum("in einem Rechnerraum");
-        buero = new Raum("im Verwaltungsbüro der Informatik");
+        buero = new Raum("im Verwaltungsbï¿½ro der Informatik");
         
-        // die Ausgänge initialisieren
+        // die Ausgï¿½nge initialisieren
         draussen.setzeAusgaenge(null, hoersaal, labor, cafeteria);
         hoersaal.setzeAusgaenge(null, null, null, draussen);
         cafeteria.setzeAusgaenge(null, draussen, null, null);
@@ -56,7 +56,7 @@ public class Spiel
     }
 
     /**
-     * Die Hauptmethode zum Spielen. Läuft bis zum Ende des Spiels
+     * Die Hauptmethode zum Spielen. Lï¿½uft bis zum Ende des Spiels
      * in einer Schleife.
      */
     public void spielen() 
@@ -64,18 +64,18 @@ public class Spiel
         willkommenstextAusgeben();
 
         // Die Hauptschleife. Hier lesen wir wiederholt Befehle ein
-        // und führen sie aus, bis das Spiel beendet wird.
+        // und fï¿½hren sie aus, bis das Spiel beendet wird.
                 
         boolean beendet = false;
         while (! beendet) {
             Befehl befehl = parser.liefereBefehl();
             beendet = verarbeiteBefehl(befehl);
         }
-        System.out.println("Danke fürs Spielen. Auf Wiedersehen.");
+        System.out.println("Danke fï¿½rs Spielen. Auf Wiedersehen.");
     }
 
     /**
-     * Einen Begrüßungstext für den Spieler ausgeben.
+     * Einen Begrï¿½ï¿½ungstext fï¿½r den Spieler ausgeben.
      */
     private void willkommenstextAusgeben()
     {
@@ -85,7 +85,7 @@ public class Spiel
         System.out.println("Tippen Sie 'help', wenn Sie Hilfe brauchen.");
         System.out.println();
         System.out.println("Sie sind " + aktuellerRaum.gibBeschreibung());
-        System.out.print("Ausgänge: ");
+        System.out.print("Ausgï¿½nge: ");
         if(aktuellerRaum.nordausgang != null) {
             System.out.print("north ");
         }
@@ -102,7 +102,7 @@ public class Spiel
     }
 
     /**
-     * Verarbeite einen gegebenen Befehl (führe ihn aus).
+     * Verarbeite einen gegebenen Befehl (fï¿½hre ihn aus).
      * @param befehl   der zu verarbeitende Befehl.
      * @return true    wenn der Befehl das Spiel beendet, false sonst
      */
@@ -133,14 +133,14 @@ public class Spiel
     /**
      * Gib Hilfsinformationen aus.
      * Hier geben wir eine etwas alberne und unklare Beschreibung
-     * aus, sowie eine Liste der Befehlswörter.
+     * aus, sowie eine Liste der Befehlswï¿½rter.
      */
     private void hilfstextAusgeben() 
     {
         System.out.println("Sie haben sich verlaufen. Sie sind allein.");
-        System.out.println("Sie irren auf dem Unigelände herum.");
+        System.out.println("Sie irren auf dem Unigelï¿½nde herum.");
         System.out.println();
-        System.out.println("Ihnen stehen folgende Befehle zur Verfügung:");
+        System.out.println("Ihnen stehen folgende Befehle zur Verfï¿½gung:");
         System.out.println("   go quit help");
     }
 
@@ -175,12 +175,12 @@ public class Spiel
         }
 
         if (naechsterRaum == null) {
-            System.out.println("Dort ist keine Tür!");
+            System.out.println("Dort ist keine Tï¿½r!");
         }
         else {
             aktuellerRaum = naechsterRaum;
             System.out.println("Sie sind " + aktuellerRaum.gibBeschreibung());
-            System.out.print("Ausgänge: ");
+            System.out.print("Ausgï¿½nge: ");
             if(aktuellerRaum.nordausgang != null) {
                 System.out.print("north ");
             }
@@ -198,7 +198,7 @@ public class Spiel
     }
 
     /**
-     * "quit" wurde eingegeben. Überprüfe den Rest des Befehls,
+     * "quit" wurde eingegeben. ï¿½berprï¿½fe den Rest des Befehls,
      * ob das Spiel wirklich beendet werden soll.
      * @return true  wenn der Befehl das Spiel beendet, false sonst
      */

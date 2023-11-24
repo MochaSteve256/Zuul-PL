@@ -3,20 +3,20 @@
  * "Die Welt von Zuul" ist ein sehr einfaches textbasiertes 
  * Adventure-Game.
  * 
- * Objekte dieser Klasse halten Informationen über Befehle,
+ * Objekte dieser Klasse halten Informationen ï¿½ber Befehle,
  * die der Benutzer eingegeben hat. Ein Befehl besteht momentan
  * aus zwei Zeichenketten: einem Befehlswort und einem zweiten
  * Wort. Beim Befehl "nimm karte" beispielsweise sind die beiden
  * Zeichenketten "nimm" und "karte".
  * 
- * Befehle werden von Benutzern dieser Klasse auf Gültigkeit
- * überprüft. Wenn ein Spieler einen ungültigen Befehl eingegeben
+ * Befehle werden von Benutzern dieser Klasse auf Gï¿½ltigkeit
+ * ï¿½berprï¿½ft. Wenn ein Spieler einen ungï¿½ltigen Befehl eingegeben
  * hat (ein unbekanntes Befehlswort), dann ist das Befehlswort <null>.
  *
  * Wenn der Befehl nur aus einem Wort bestand, dann ist das
  * zweite Wort <null>.
  * 
- * @author  Michael Kölling und David J. Barnes
+ * @author  Michael Kï¿½lling und David J. Barnes
  * @version 2016.02.29
  */
 
@@ -26,8 +26,8 @@ class Befehl
     private String zweitesWort;
 
     /**
-     * Erzeuge ein Befehlsobjekt. Beide Wörter müssen angegeben werden,
-     * aber jedes oder beide dürfen 'null' sein.
+     * Erzeuge ein Befehlsobjekt. Beide Wï¿½rter mï¿½ssen angegeben werden,
+     * aber jedes oder beide dï¿½rfen 'null' sein.
      * @param erstesWort   das erste Wort des Befehls. Sollte
      *                     'null' sein, wenn dieser Befehl als nicht
      *                     vom Spiel erkannt gekennzeichnet werden soll.
