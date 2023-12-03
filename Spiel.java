@@ -25,6 +25,11 @@ public class Spiel
     /**
      * Erzeuge ein Spiel und initialisiere die interne Raumkarte.
      */
+    public static void main(String[] args)
+    {
+        Spiel spiel = new Spiel();
+        spiel.spielen();
+    }
     public Spiel() 
     {
         raeumeAnlegen();
@@ -43,14 +48,35 @@ public class Spiel
         hoersaal = new Raum("in einem Vorlesungssaal");
         cafeteria = new Raum("in der Cafeteria der Uni");
         labor = new Raum("in einem Rechnerraum");
-        buero = new Raum("im Verwaltungsb�ro der Informatik");
+        buero = new Raum("im Verwaltungsbüro der Informatik");
         
         // die Ausg�nge initialisieren
-        draussen.setzeAusgaenge(null, hoersaal, labor, cafeteria);
-        hoersaal.setzeAusgaenge(null, null, null, draussen);
-        cafeteria.setzeAusgaenge(null, draussen, null, null);
-        labor.setzeAusgaenge(draussen, buero, null, null);
-        buero.setzeAusgaenge(null, null, null, labor);
+        //north east süden west
+        draussen.setzeAusgang("north", null);
+        draussen.setzeAusgang("east", hoersaal);
+        draussen.setzeAusgang("south", labor);
+        draussen.setzeAusgang("west", cafeteria);
+
+        hoersaal.setzeAusgang("north", null);
+        hoersaal.setzeAusgang("east", null);
+        hoersaal.setzeAusgang("south", null);
+        hoersaal.setzeAusgang("west", draussen);
+
+        cafeteria.setzeAusgang("north", null);
+        cafeteria.setzeAusgang("east", draussen);
+        cafeteria.setzeAusgang("south", null);
+        cafeteria.setzeAusgang("west", null);
+
+        labor.setzeAusgang("north", draussen);
+        labor.setzeAusgang("east", buero);
+        labor.setzeAusgang("south", null);
+        labor.setzeAusgang("west", null);
+
+        buero.setzeAusgang("north", null);
+        buero.setzeAusgang("east", null);
+        buero.setzeAusgang("south", null);
+        buero.setzeAusgang("west", labor);
+
 
         aktuellerRaum = draussen;  // das Spiel startet draussen
     }
@@ -62,6 +88,7 @@ public class Spiel
     public void spielen() 
     {            
         willkommenstextAusgeben();
+        raumInfoAusgeben();
 
         // Die Hauptschleife. Hier lesen wir wiederholt Befehle ein
         // und f�hren sie aus, bis das Spiel beendet wird.
@@ -71,7 +98,7 @@ public class Spiel
             Befehl befehl = parser.liefereBefehl();
             beendet = verarbeiteBefehl(befehl);
         }
-        System.out.println("Danke f�rs Spielen. Auf Wiedersehen.");
+        System.out.println("Danke fürs Spielen. Auf Wiedersehen.");
     }
 
     /**
@@ -84,18 +111,22 @@ public class Spiel
         System.out.println("Zuul ist ein fertiges, unglaublich spannendes Spiel.");
         System.out.println("Tippen Sie 'help', wenn Sie Hilfe brauchen.");
         System.out.println();
+    }
+
+    private void raumInfoAusgeben()
+    {
         System.out.println("Sie sind " + aktuellerRaum.gibBeschreibung());
-        System.out.print("Ausg�nge: ");
-        if(aktuellerRaum.nordausgang != null) {
+        System.out.print("Ausgänge: ");
+        if(aktuellerRaum.gibAusgang("north") != null) {
             System.out.print("north ");
         }
-        if(aktuellerRaum.ostausgang != null) {
+        if(aktuellerRaum.gibAusgang("east") != null) {
             System.out.print("east ");
         }
-        if(aktuellerRaum.suedausgang != null) {
+        if(aktuellerRaum.gibAusgang("south") != null) {
             System.out.print("south ");
         }
-        if(aktuellerRaum.westausgang != null) {
+        if(aktuellerRaum.gibAusgang("west") != null) {
             System.out.print("west ");
         }
         System.out.println();
@@ -124,6 +155,9 @@ public class Spiel
         else if (befehlswort.equals("quit")) {
             moechteBeenden = beenden(befehl);
         }
+        else if (befehlswort.equals("map")) {
+            raumInfoAusgeben();
+        }
         
         return moechteBeenden;
     }
@@ -138,10 +172,10 @@ public class Spiel
     private void hilfstextAusgeben() 
     {
         System.out.println("Sie haben sich verlaufen. Sie sind allein.");
-        System.out.println("Sie irren auf dem Unigel�nde herum.");
+        System.out.println("Sie irren auf dem Unigelände herum.");
         System.out.println();
-        System.out.println("Ihnen stehen folgende Befehle zur Verf�gung:");
-        System.out.println("   go quit help");
+        System.out.println("Ihnen stehen folgende Befehle zur Verfügung:");
+        System.out.println("   go quit help map");
     }
 
     /**
@@ -162,35 +196,35 @@ public class Spiel
         // Wir versuchen, den Raum zu verlassen.
         Raum naechsterRaum = null;
         if(richtung.equals("north")) {
-            naechsterRaum = aktuellerRaum.nordausgang;
+            naechsterRaum = aktuellerRaum.gibAusgang("north");
         }
         if(richtung.equals("east")) {
-            naechsterRaum = aktuellerRaum.ostausgang;
+            naechsterRaum = aktuellerRaum.gibAusgang("east");
         }
         if(richtung.equals("south")) {
-            naechsterRaum = aktuellerRaum.suedausgang;
+            naechsterRaum = aktuellerRaum.gibAusgang("south");
         }
         if(richtung.equals("west")) {
-            naechsterRaum = aktuellerRaum.westausgang;
+            naechsterRaum = aktuellerRaum.gibAusgang("west");
         }
 
         if (naechsterRaum == null) {
-            System.out.println("Dort ist keine T�r!");
+            System.out.println("Dort ist keine Tür!");
         }
         else {
             aktuellerRaum = naechsterRaum;
             System.out.println("Sie sind " + aktuellerRaum.gibBeschreibung());
             System.out.print("Ausg�nge: ");
-            if(aktuellerRaum.nordausgang != null) {
+            if(aktuellerRaum.gibAusgang("north") != null) {
                 System.out.print("north ");
             }
-            if(aktuellerRaum.ostausgang != null) {
+            if(aktuellerRaum.gibAusgang("east") != null) {
                 System.out.print("east ");
             }
-            if(aktuellerRaum.suedausgang != null) {
+            if(aktuellerRaum.gibAusgang("south") != null) {
                 System.out.print("south ");
             }
-            if(aktuellerRaum.westausgang != null) {
+            if(aktuellerRaum.gibAusgang("west") != null) {
                 System.out.print("west ");
             }
             System.out.println();

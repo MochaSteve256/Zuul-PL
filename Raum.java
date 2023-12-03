@@ -1,61 +1,52 @@
+import java.util.HashMap;
 /**
- * Diese Klasse modelliert Räume in der Welt von Zuul.
+ * Diese Klasse modelliert Rï¿½ume in der Welt von Zuul.
  * 
  * Diese Klasse ist Teil der Anwendung "Die Welt von Zuul".
  * "Die Welt von Zuul" ist ein sehr einfaches textbasiertes 
  * Adventure-Game.
  * 
- * Ein "Raum" repräsentiert einen Ort in der virtuellen Landschaft des
- * Spiels. Ein Raum ist mit anderen Räumen über Ausgänge verbunden.
- * Mögliche Ausgänge liegen im Norden, Osten, Süden und Westen.
- * Für jede Richtung hält ein Raum eine Referenz auf den 
+ * Ein "Raum" reprï¿½sentiert einen Ort in der virtuellen Landschaft des
+ * Spiels. Ein Raum ist mit anderen Rï¿½umen ï¿½ber Ausgï¿½nge verbunden.
+ * Mï¿½gliche Ausgï¿½nge liegen im Norden, Osten, Sï¿½den und Westen.
+ * Fï¿½r jede Richtung hï¿½lt ein Raum eine Referenz auf den 
  * benachbarten Raum.
  * 
- * @author  Michael Kölling und David J. Barnes
+ * @author  Michael Kï¿½lling und David J. Barnes
  * @version 2016.02.29
  */
 public class Raum 
 {
-    public String beschreibung;
-    public Raum nordausgang;
-    public Raum suedausgang;
-    public Raum ostausgang;
-    public Raum westausgang;
+
+    private String beschreibung;
+    private HashMap<String, Raum> ausgaenge;
 
     /**
      * Erzeuge einen Raum mit einer Beschreibung. Ein Raum
-     * hat anfangs keine Ausgänge. Eine Beschreibung hat die Form 
-     * "in einer Küche" oder "auf einem Sportplatz".
+     * hat anfangs keine Ausgï¿½nge. Eine Beschreibung hat die Form 
+     * "in einer Kï¿½che" oder "auf einem Sportplatz".
      * @param beschreibung  die Beschreibung des Raums
      */
     public Raum(String beschreibung) 
     {
         this.beschreibung = beschreibung;
+        this.ausgaenge = new HashMap<>();
     }
 
     /**
-     * Definiere die Ausgänge dieses Raums. Jede Richtung
-     * führt entweder in einen anderen Raum oder ist 'null'
+     * Definiere die Ausgï¿½nge dieses Raums. Jede Richtung
+     * fï¿½hrt entweder in einen anderen Raum oder ist 'null'
      * (kein Ausgang).
      * @param norden  der Nordausgang
      * @param osten   der Ostausgang
-     * @param sueden  der Südausgang
+     * @param sueden  der Sï¿½dausgang
      * @param westen  der Westausgang
      */
-    public void setzeAusgaenge(Raum norden, Raum osten,
-                               Raum sueden, Raum westen) 
+    public void setzeAusgang(String richtung, Raum raum)
     {
-        if(norden != null) {
-            nordausgang = norden;
-        }
-        if(osten != null) {
-            ostausgang = osten;
-        }
-        if(sueden != null) {
-            suedausgang = sueden;
-        }
-        if(westen != null) {
-            westausgang = westen;
+        if (raum != null) 
+        {
+            ausgaenge.put(richtung, raum);
         }
     }
 
@@ -65,5 +56,10 @@ public class Raum
     public String gibBeschreibung()
     {
         return beschreibung;
+    }
+
+    public Raum gibAusgang(String richtung)
+    {
+        return ausgaenge.get(richtung);
     }
 }
