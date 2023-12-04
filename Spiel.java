@@ -1,3 +1,5 @@
+import java.util.Scanner;
+import java.util.ArrayList;
 /**
  *  Dies ist die Hauptklasse der Anwendung "Die Welt von Zuul".
  *  "Die Welt von Zuul" ist ein sehr einfaches, textbasiertes
@@ -21,6 +23,7 @@ public class Spiel
 {
     private Parser parser;
     private Raum aktuellerRaum;
+    private Spieler charakter;
         
     /**
      * Erzeuge ein Spiel und initialisiere die interne Raumkarte.
@@ -30,10 +33,20 @@ public class Spiel
         Spiel spiel = new Spiel();
         spiel.spielen();
     }
+
     public Spiel() 
     {
         raeumeAnlegen();
         parser = new Parser();
+        charakter = new Spieler(nameGeben());
+    }
+    private String nameGeben()
+    {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Gib deinen Namen ein: ");
+        String name = scanner.nextLine();
+        //scanner.close();
+        return name;
     }
 
     /**
@@ -41,42 +54,33 @@ public class Spiel
      */
     private void raeumeAnlegen()
     {
-        Raum draussen, hoersaal, cafeteria, labor, buero;
+        Raum draussen, eingangshof, verwinkelteBibliothek, thronsaal, verfallenerKerker, flur, keller;
 
         // die R�ume erzeugen
-        draussen = new Raum("vor dem Haupteingang der Universit�t");
-        hoersaal = new Raum("in einem Vorlesungssaal");
-        cafeteria = new Raum("in der Cafeteria der Uni");
-        labor = new Raum("in einem Rechnerraum");
-        buero = new Raum("im Verwaltungsbüro der Informatik");
+        draussen = new Raum("im nebeligen Wald", "im nebeligen Wald, wo das Rauschen der Blätter im Wind zu hören ist", new String[]{"Laubpuster"}, new ArrayList<Gegner>());
+        eingangshof = new Raum("im verfallenen Eingangshof", "im verfallenen Eingangshof der alten Burgruine, umgeben von hohen Mauern und dichtem Nebel", new String[]{}, new ArrayList<Gegner>());
+        flur = new Raum("im düsteren Flur", "im düsteren Flur zwischen dem Eingangshof und dem Thronsaal", new String[]{}, new ArrayList<Gegner>());
+        verwinkelteBibliothek = new Raum("in einer verwinkelten Bibliothek", "in einer verwinkelten Bibliothek, in der vergilbte Bücher und geheime Schriften verstauben", new String[]{}, new ArrayList<Gegner>());
+        thronsaal = new Raum("im majestätischen Thronsaal", "im majestätischen Thronsaal, wo einst der König herrschte, nun aber der große böse Rittergeist Sir Moros sein Unwesen treibt", new String[]{}, new ArrayList<Gegner>());
+        verfallenerKerker = new Raum("im verfallenen Kerker", "in einem verfallenen Kerker, wo düstere Gestalten ihre Spuren hinterlassen haben", new String[]{}, new ArrayList<Gegner>());
+        keller = new Raum("im kalten Kellergang", "in einem kalten Kellergang unter der alten Burgruine, mit feuchten Steinwänden", new String[]{}, new ArrayList<Gegner>());
+
+
         
-        // die Ausg�nge initialisieren
-        //north east süden west
-        draussen.setzeAusgang("north", null);
-        draussen.setzeAusgang("east", hoersaal);
-        draussen.setzeAusgang("south", labor);
-        draussen.setzeAusgang("west", cafeteria);
-
-        hoersaal.setzeAusgang("north", null);
-        hoersaal.setzeAusgang("east", null);
-        hoersaal.setzeAusgang("south", null);
-        hoersaal.setzeAusgang("west", draussen);
-
-        cafeteria.setzeAusgang("north", null);
-        cafeteria.setzeAusgang("east", draussen);
-        cafeteria.setzeAusgang("south", null);
-        cafeteria.setzeAusgang("west", null);
-
-        labor.setzeAusgang("north", draussen);
-        labor.setzeAusgang("east", buero);
-        labor.setzeAusgang("south", null);
-        labor.setzeAusgang("west", null);
-
-        buero.setzeAusgang("north", null);
-        buero.setzeAusgang("east", null);
-        buero.setzeAusgang("south", null);
-        buero.setzeAusgang("west", labor);
-
+        // die Ausgänge verbinden
+        draussen.setzeAusgang("north", eingangshof, false);
+        eingangshof.setzeAusgang("south", draussen, false);
+        eingangshof.setzeAusgang("north", flur, false);
+        flur.setzeAusgang("south", eingangshof, false);
+        flur.setzeAusgang("north", thronsaal, true);
+        thronsaal.setzeAusgang("south", flur, false);
+        flur.setzeAusgang("east", verwinkelteBibliothek, false);
+        verwinkelteBibliothek.setzeAusgang("west", flur, false);
+        flur.setzeAusgang("down", verfallenerKerker, false);
+        verfallenerKerker.setzeAusgang("west", keller, true);
+        keller.setzeAusgang("east", verfallenerKerker, true);
+        keller.setzeAusgang("up", flur, false);
+        flur.setzeAusgang("down", keller, false);
 
         aktuellerRaum = draussen;  // das Spiel startet draussen
     }
@@ -107,29 +111,29 @@ public class Spiel
     private void willkommenstextAusgeben()
     {
         System.out.println();
-        System.out.println("Willkommen bei Zuul!");
+        System.out.println("Willkommen bei Zuul, " + charakter.gibName() + "!");
         System.out.println("Zuul ist ein fertiges, unglaublich spannendes Spiel.");
-        System.out.println("Tippen Sie 'help', wenn Sie Hilfe brauchen.");
+        System.out.println("Tippe 'help', wenn Sie Hilfe brauchen.");
         System.out.println();
     }
 
     private void raumInfoAusgeben()
     {
-        System.out.println("Sie sind " + aktuellerRaum.gibBeschreibung());
-        System.out.print("Ausgänge: ");
-        if(aktuellerRaum.gibAusgang("north") != null) {
-            System.out.print("north ");
+        System.out.println("Du bist " + aktuellerRaum.gibBeschreibung());
+        aktuellerRaum.schreibeRaumInfo();
+    }
+    private void langeBeschreibungAusgeben()
+    {
+        System.out.println("Du bist " + aktuellerRaum.gibLangeBeschreibung());
+        if (aktuellerRaum.gibRumliegendeItems().length > 0)
+        {
+            System.out.println("Du findest:");
         }
-        if(aktuellerRaum.gibAusgang("east") != null) {
-            System.out.print("east ");
+        for (String i : aktuellerRaum.gibRumliegendeItems()) {
+            charakter.gibInventar().addItem(i);
+            System.out.println(" - " + i);
         }
-        if(aktuellerRaum.gibAusgang("south") != null) {
-            System.out.print("south ");
-        }
-        if(aktuellerRaum.gibAusgang("west") != null) {
-            System.out.print("west ");
-        }
-        System.out.println();
+        aktuellerRaum.schreibeRaumInfo();
     }
 
     /**
@@ -155,10 +159,13 @@ public class Spiel
         else if (befehlswort.equals("quit")) {
             moechteBeenden = beenden(befehl);
         }
-        else if (befehlswort.equals("map")) {
-            raumInfoAusgeben();
+        else if (befehlswort.equals("look")) {
+            langeBeschreibungAusgeben();
         }
-        
+        else if (befehlswort.equals("inventory")) {
+            charakter.gibInventar().schreibeInventar();
+        }
+
         return moechteBeenden;
     }
 
@@ -171,11 +178,13 @@ public class Spiel
      */
     private void hilfstextAusgeben() 
     {
-        System.out.println("Sie haben sich verlaufen. Sie sind allein.");
-        System.out.println("Sie irren auf dem Unigelände herum.");
+        System.out.println("Du bist in einem Märchenwald. Du bist allein.");
+        System.out.println("Du siehst deine Umgebung und kannst mit ihr interagieren.");
         System.out.println();
-        System.out.println("Ihnen stehen folgende Befehle zur Verfügung:");
-        System.out.println("   go quit help map");
+        System.out.println("Dazu stehen dir folgende Befehle zur Verfügung:");
+        for (String befehlswort : parser.gibMoeglicheBefehle()) {
+            System.out.println("    " + befehlswort);
+        };
     }
 
     /**
@@ -187,48 +196,32 @@ public class Spiel
     {
         if(!befehl.hatZweitesWort()) {
             // Gibt es kein zweites Wort, wissen wir nicht, wohin...
-            System.out.println("Sagen Sie doch wohin!!");
+            System.out.println("Sag doch wohin!!");
             return;
         }
 
         String richtung = befehl.gibZweitesWort();
 
-        // Wir versuchen, den Raum zu verlassen.
-        Raum naechsterRaum = null;
-        if(richtung.equals("north")) {
-            naechsterRaum = aktuellerRaum.gibAusgang("north");
-        }
-        if(richtung.equals("east")) {
-            naechsterRaum = aktuellerRaum.gibAusgang("east");
-        }
-        if(richtung.equals("south")) {
-            naechsterRaum = aktuellerRaum.gibAusgang("south");
-        }
-        if(richtung.equals("west")) {
-            naechsterRaum = aktuellerRaum.gibAusgang("west");
-        }
+        //leave room
+        Raum naechsterRaum = aktuellerRaum.gibAusgang(richtung);
 
         if (naechsterRaum == null) {
             System.out.println("Dort ist keine Tür!");
         }
         else {
+            if (aktuellerRaum.istSchluesselGebraucht(richtung))
+            {
+                if (!charakter.gibInventar().useItem("schluessel"))
+                {
+                    System.out.println("Du hast keinen Schluessel!");
+                    raumInfoAusgeben();
+                    return;
+                }
+            }
             aktuellerRaum = naechsterRaum;
-            System.out.println("Sie sind " + aktuellerRaum.gibBeschreibung());
-            System.out.print("Ausg�nge: ");
-            if(aktuellerRaum.gibAusgang("north") != null) {
-                System.out.print("north ");
-            }
-            if(aktuellerRaum.gibAusgang("east") != null) {
-                System.out.print("east ");
-            }
-            if(aktuellerRaum.gibAusgang("south") != null) {
-                System.out.print("south ");
-            }
-            if(aktuellerRaum.gibAusgang("west") != null) {
-                System.out.print("west ");
-            }
-            System.out.println();
+            raumInfoAusgeben();
         }
+        
     }
 
     /**

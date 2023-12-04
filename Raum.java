@@ -1,4 +1,6 @@
 import java.util.HashMap;
+import java.util.Set;
+import java.util.ArrayList;
 /**
  * Diese Klasse modelliert R�ume in der Welt von Zuul.
  * 
@@ -19,7 +21,12 @@ public class Raum
 {
 
     private String beschreibung;
+    private String langeBeschreibung;
     private HashMap<String, Raum> ausgaenge;
+    private HashMap <String, Boolean> schluesselGebraucht;
+    private boolean umgeschaut = false;
+    private String[] rumliegendeItems;
+    private ArrayList<Gegner> gegner;
 
     /**
      * Erzeuge einen Raum mit einer Beschreibung. Ein Raum
@@ -27,27 +34,35 @@ public class Raum
      * "in einer K�che" oder "auf einem Sportplatz".
      * @param beschreibung  die Beschreibung des Raums
      */
-    public Raum(String beschreibung) 
+    public Raum(String beschreibung, String langeBeschreibung, String[] rumliegendeItems, ArrayList<Gegner> gegner) 
     {
         this.beschreibung = beschreibung;
+        this.langeBeschreibung = langeBeschreibung;
         this.ausgaenge = new HashMap<>();
+        this.schluesselGebraucht = new HashMap<>();
+        this.rumliegendeItems = rumliegendeItems;
+        this.gegner = gegner;
     }
 
-    /**
-     * Definiere die Ausg�nge dieses Raums. Jede Richtung
-     * f�hrt entweder in einen anderen Raum oder ist 'null'
-     * (kein Ausgang).
-     * @param norden  der Nordausgang
-     * @param osten   der Ostausgang
-     * @param sueden  der S�dausgang
-     * @param westen  der Westausgang
-     */
-    public void setzeAusgang(String richtung, Raum raum)
+    public void setzeAusgang(String richtung, Raum raum, boolean brauchtSchluessel)
     {
-        if (raum != null) 
+        if (raum != null)
         {
             ausgaenge.put(richtung, raum);
+            schluesselGebraucht.put(richtung, brauchtSchluessel);
         }
+    }
+    public boolean istSchluesselGebraucht(String richtung)
+    {
+        return schluesselGebraucht.get(richtung);
+    }
+    public void schreibeRaumInfo()
+    {
+        String ergebnis = "Ausgänge:";
+        Set<String> keys = ausgaenge.keySet();
+        for(String ausgang : keys)
+            ergebnis += " " + ausgang;
+        System.out.println(ergebnis);
     }
 
     /**
@@ -57,9 +72,25 @@ public class Raum
     {
         return beschreibung;
     }
-
+    public String gibLangeBeschreibung()
+    {
+        umgeschaut = true;
+        return langeBeschreibung;
+    }
+    public boolean wurdeUmgeschaut()
+    {
+        return umgeschaut;
+    }
     public Raum gibAusgang(String richtung)
     {
         return ausgaenge.get(richtung);
+    }
+    public ArrayList<Gegner> gibGegner()
+    {
+        return gegner;
+    }
+    public String[] gibRumliegendeItems()
+    {
+        return rumliegendeItems;
     }
 }

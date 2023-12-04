@@ -15,7 +15,7 @@ class Befehlswoerter
 {
     // ein konstantes Array mit den g�ltigen Befehlsw�rtern
     private static final String gueltigeBefehle[] = {
-        "go", "quit", "help", "map"
+        "go", "quit", "help", "look", "inventory"
     };
 
     /**
@@ -37,10 +37,13 @@ class Befehlswoerter
         for(int i = 0; i < gueltigeBefehle.length; i++) {
             if(gueltigeBefehle[i].equals(eingabe))
                 return true;
-            System.out.println(gueltigeBefehle[i]);
         }
         // Wenn wir hierher gelangen, wurde die Eingabe nicht
         // in den Befehlsw�rter gefunden.
         return false;
+    }
+    public String[] gibBefehle()
+    {
+        return gueltigeBefehle;
     }
 }
