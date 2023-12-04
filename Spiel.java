@@ -24,6 +24,8 @@ public class Spiel
     private Parser parser;
     private Raum aktuellerRaum;
     private Spieler charakter;
+
+    private Raum draussen, eingangshof, verwinkelteBibliothek, thronsaal, verfallenerKerker, flur, keller;
         
     /**
      * Erzeuge ein Spiel und initialisiere die interne Raumkarte.
@@ -31,7 +33,6 @@ public class Spiel
     public static void main(String[] args)
     {
         Spiel spiel = new Spiel();
-        spiel.spielen();
     }
 
     public Spiel() 
@@ -39,6 +40,8 @@ public class Spiel
         raeumeAnlegen();
         parser = new Parser();
         charakter = new Spieler(nameGeben());
+        charakter.gibInventar().addItem("Schlüssel");
+        spielen();
     }
     private String nameGeben()
     {
@@ -54,7 +57,6 @@ public class Spiel
      */
     private void raeumeAnlegen()
     {
-        Raum draussen, eingangshof, verwinkelteBibliothek, thronsaal, verfallenerKerker, flur, keller;
 
         // die R�ume erzeugen
         draussen = new Raum("im nebeligen Wald", "im nebeligen Wald, wo das Rauschen der Blätter im Wind zu hören ist", new String[]{"Laubpuster"}, new ArrayList<Gegner>());
@@ -169,6 +171,21 @@ public class Spiel
         return moechteBeenden;
     }
 
+    private boolean versucheFalltuer(Raum aktuellerRaum, Raum naechsterRaum)
+    {
+        if (aktuellerRaum.gibBeschreibung().toLowerCase().contains("flur"))
+        {
+            if (naechsterRaum.gibBeschreibung().toLowerCase().contains("biblio"))
+            {
+                if (!aktuellerRaum.wurdeUmgeschaut())
+                {
+                    System.out.println("Oh nein, "+ charakter.gibName() + "! Du bist durch eine Falltür geplumpst!");
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
     // Implementierung der Benutzerbefehle:
 
     /**
@@ -202,18 +219,25 @@ public class Spiel
 
         String richtung = befehl.gibZweitesWort();
 
-        //leave room
+        
         Raum naechsterRaum = aktuellerRaum.gibAusgang(richtung);
 
-        if (naechsterRaum == null) {
+        if (versucheFalltuer(aktuellerRaum, naechsterRaum))
+        {
+            aktuellerRaum = verfallenerKerker;
+            raumInfoAusgeben();
+            return;
+        }
+
+        if (naechsterRaum == null || richtung.equals("down")) {
             System.out.println("Dort ist keine Tür!");
         }
         else {
             if (aktuellerRaum.istSchluesselGebraucht(richtung))
             {
-                if (!charakter.gibInventar().useItem("schluessel"))
+                if (!charakter.gibInventar().useItem("Schlüssel"))
                 {
-                    System.out.println("Du hast keinen Schluessel!");
+                    System.out.println("Du hast keinen Schlüssel!");
                     raumInfoAusgeben();
                     return;
                 }
