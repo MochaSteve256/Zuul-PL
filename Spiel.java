@@ -1,5 +1,6 @@
 import java.util.Scanner;
 import java.util.ArrayList;
+import java.util.List;
 /**
  *  Dies ist die Hauptklasse der Anwendung "Die Welt von Zuul".
  *  "Die Welt von Zuul" ist ein sehr einfaches, textbasiertes
@@ -59,7 +60,7 @@ public class Spiel
     {
 
         // die R�ume erzeugen
-        draussen = new Raum("im nebeligen Wald", "im nebeligen Wald, wo das Rauschen der Blätter im Wind zu hören ist", new String[]{"Laubpuster"}, new ArrayList<Gegner>());
+        draussen = new Raum("im nebeligen Wald", "im nebeligen Wald, wo das Rauschen der Blätter im Wind zu hören ist", new String[]{"Laubpuster"}, new ArrayList<Gegner>(List.of(new Gegner("Hanswurst", 3, 1))));
         eingangshof = new Raum("im verfallenen Eingangshof", "im verfallenen Eingangshof der alten Burgruine, umgeben von hohen Mauern und dichtem Nebel", new String[]{}, new ArrayList<Gegner>());
         flur = new Raum("im düsteren Flur", "im düsteren Flur zwischen dem Eingangshof und dem Thronsaal", new String[]{}, new ArrayList<Gegner>());
         verwinkelteBibliothek = new Raum("in einer verwinkelten Bibliothek", "in einer verwinkelten Bibliothek, in der vergilbte Bücher und geheime Schriften verstauben", new String[]{}, new ArrayList<Gegner>());
@@ -129,13 +130,58 @@ public class Spiel
         System.out.println("Du bist " + aktuellerRaum.gibLangeBeschreibung());
         if (aktuellerRaum.gibRumliegendeItems().length > 0)
         {
-            System.out.println("Du findest:");
+            System.out.println("Hier liegen folgende Gegenstände herum:");
         }
+        for (String i : aktuellerRaum.gibRumliegendeItems()) {
+            System.out.println(" - " + i);
+        }
+        if (aktuellerRaum.gibGegner().size() > 0)
+        {
+            System.out.println("In diesem Raum gibt es folgende Gegner:");
+            for (Gegner g : aktuellerRaum.gibGegner()) {
+                System.out.println(" - " + g.gibName() + ": " + g.gibHP() + " HP, " + g.gibSchaden() + " DMG");
+            }
+        }
+        aktuellerRaum.schreibeRaumInfo();
+    }
+    private void take()
+    {
         for (String i : aktuellerRaum.gibRumliegendeItems()) {
             charakter.gibInventar().addItem(i);
             System.out.println(" - " + i);
         }
-        aktuellerRaum.schreibeRaumInfo();
+    }
+    private boolean attack(Befehl befehl)
+    {
+        int schaden = 1;
+        //spieler attackiert alle Gegner im Raum
+        for (Gegner g : aktuellerRaum.gibGegner())
+        {
+            g.wirdAngegriffen(schaden);
+            if (g.gibHP() > 0)
+                System.out.println(g.gibName() + " wurde mit " + schaden + " DMG angegriffen, er hat nun noch " + g.gibHP() + " HP");
+            else
+                System.out.println(g.gibName() + " wurde mit " + schaden + " DMG angegriffen und wurde besiegt");
+        }
+        //alle Gegner attackieren spieler
+        for (Gegner g : aktuellerRaum.gibGegner()) {
+            if (g.gibHP() > 0)
+            {
+                g.angreifen(charakter);
+                System.out.println(charakter.gibName() + " wurde von " + g.gibName() + " mit " + g.gibSchaden() + " DMG angegriffen");
+            }
+        }
+        if (charakter.gibHP() <= 0)
+        {
+            System.out.println("Du bist gestorben. :(");
+            return true;
+        }
+        System.out.println("Du hast nun " + charakter.gibHP() + " HP");
+        return false;
+    }
+    public void healthAusgeben()
+    {
+        System.out.println("Du hast aktuell " + charakter.gibHP() + " HP");
     }
 
     /**
@@ -166,6 +212,15 @@ public class Spiel
         }
         else if (befehlswort.equals("inventory")) {
             charakter.gibInventar().schreibeInventar();
+        }
+        else if (befehlswort.equals("take")) {
+            take();
+        }
+        else if (befehlswort.equals("attack")) {
+            moechteBeenden = attack(befehl);
+        }
+        else if (befehlswort.equals("health")) {
+            healthAusgeben();
         }
 
         return moechteBeenden;
@@ -235,7 +290,7 @@ public class Spiel
         else {
             if (aktuellerRaum.istSchluesselGebraucht(richtung))
             {
-                if (!charakter.gibInventar().useItem("Schlüssel"))
+                if (!charakter.gibInventar().useItem("Schlüssel", true))
                 {
                     System.out.println("Du hast keinen Schlüssel!");
                     raumInfoAusgeben();

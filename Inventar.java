@@ -16,11 +16,16 @@ public class Inventar {
             inventory.put(itemName, inventory.getOrDefault(itemName, 0) + 1);
         }
     }
-    public boolean useItem(String itemName)
+    public boolean useItem(String itemName, boolean singleUse)
     {
         if (inventory.containsKey(itemName)) {
-            if (inventory.get(itemName) > 0) {
-                inventory.put(itemName, inventory.get(itemName) - 1);
+            if (singleUse) {
+                if (inventory.get(itemName) > 0) {
+                    inventory.put(itemName, inventory.get(itemName) - 1);
+                    return true;
+                }
+            }
+            else {
                 return true;
             }
         }
