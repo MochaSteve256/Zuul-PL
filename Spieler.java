@@ -20,8 +20,11 @@ public class Spieler {
             hp = 0;
         }
     }
-    public void heilen() {
-        hp += 1;
+    public void heilen(int hp) {
+        this.hp += hp;
+        if (this.hp > 10) {
+            this.hp = 10;
+        }
     }
     public Inventar gibInventar() {
         return inventar;

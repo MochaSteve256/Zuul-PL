@@ -163,7 +163,16 @@ public class Spiel
     }
     private boolean attack(Befehl befehl)
     {
-        int schaden = 1;
+        int schaden = 0;
+        if (charakter.gibInventar().useItem())
+        {
+            schaden = charakter.gibInventar().gibGewaehltesItem().gibSchaden();
+        }
+        else
+        {
+            System.out.println("Der ausgewählte Gegenstand ist ungültig, die Attacke wir abgebrochen");
+            return false;
+        }
         //spieler attackiert alle Gegner im Raum
         Iterator<Gegner> it = aktuellerRaum.gibGegner().iterator();
         while (it.hasNext())
@@ -204,6 +213,17 @@ public class Spiel
         }
         System.out.println("Du hast nun " + charakter.gibHP() + " HP");
         return false;
+    }
+    public void select(Befehl befehl)
+    {
+        String desiredItem = befehl.gibZweitesWort();
+        if (charakter.gibInventar().selectItem(desiredItem)) {
+            System.out.println("Der Gegenstand wurde ausgewaehlt.");
+        }
+        else
+        {
+            System.out.println("Der genannte Gegenstand befindet sich nicht im Inventar.");
+        }
     }
     public void healthAusgeben()
     {
@@ -247,6 +267,9 @@ public class Spiel
         }
         else if (befehlswort.equals("health")) {
             healthAusgeben();
+        }
+        else if (befehlswort.equals("select")) {
+            select(befehl);
         }
 
         return moechteBeenden;
@@ -316,7 +339,8 @@ public class Spiel
         else {
             if (aktuellerRaum.istSchluesselGebraucht(richtung))
             {
-                if (!charakter.gibInventar().useItem(schluessel))
+                charakter.gibInventar().selectItem("Schlüssel");
+                if (!charakter.gibInventar().useItem())
                 {
                     System.out.println("Du hast keinen Schlüssel!");
                     raumInfoAusgeben();

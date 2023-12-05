@@ -1,5 +1,4 @@
 import java.util.HashMap;
-import java.util.List;
 
 public class Inventar {
     HashMap<Item, Integer> inventory;
@@ -14,27 +13,32 @@ public class Inventar {
         inventory.put(item, inventory.getOrDefault(item, 0) + 1);
         selectedItem = item;
     }
-    public boolean selectItem(Item item)
-    {
-        if (inventory.containsKey(item))
-        {
-            selectedItem = item;
-            return true;
+    public boolean selectItem(String itemName) {
+        for (Item item : inventory.keySet()) {
+            if (item.gibName().equals(itemName)) {
+                selectedItem = item;
+                return true;
+            }
         }
         return false;
     }
-    public boolean useItem(Item item)
+    
+    public boolean useItem()
     {
-        inventory.put(item, inventory.get(item) - 1);
-        if (item.gibSingleUse())
+        inventory.put(selectedItem, inventory.get(selectedItem) - 1);
+        if (selectedItem.gibSingleUse())
         {
-            if (inventory.get(item) == -1)
+            if (inventory.get(selectedItem) == -1)
             {
-                inventory.put(item, 0);
+                inventory.put(selectedItem, 0);
                 return false;
             }
         }
         return true;
+    }
+    public Item gibGewaehltesItem()
+    {
+        return selectedItem;
     }
     public void schreibeInventar()
     {
