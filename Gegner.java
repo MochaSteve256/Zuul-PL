@@ -2,11 +2,13 @@ public class Gegner {
     private int hp;
     private String name;
     private int schaden;
+    private Item drop;
 
-    public Gegner(String name, int hp, int schaden) {
+    public Gegner(String name, int hp, int schaden, Item drop) {
         this.name = name;
         this.hp = hp;
         this.schaden = schaden;
+        this.drop = drop;
     }
     public void wirdAngegriffen(int schaden) {
         hp -= schaden;
@@ -25,5 +27,8 @@ public class Gegner {
     }
     public int gibSchaden() {
         return schaden;
+    }
+    public Item gibDrop() {
+        return drop;
     }
 }

@@ -25,7 +25,7 @@ public class Raum
     private HashMap<String, Raum> ausgaenge;
     private HashMap <String, Boolean> schluesselGebraucht;
     private boolean umgeschaut = false;
-    private String[] rumliegendeItems;
+    private Item[] rumliegendeItems;
     private ArrayList<Gegner> gegner;
 
     /**
@@ -34,7 +34,7 @@ public class Raum
      * "in einer K�che" oder "auf einem Sportplatz".
      * @param beschreibung  die Beschreibung des Raums
      */
-    public Raum(String beschreibung, String langeBeschreibung, String[] rumliegendeItems, ArrayList<Gegner> gegner) 
+    public Raum(String beschreibung, String langeBeschreibung, Item[] rumliegendeItems, ArrayList<Gegner> gegner) 
     {
         this.beschreibung = beschreibung;
         this.langeBeschreibung = langeBeschreibung;
@@ -92,8 +92,22 @@ public class Raum
     {
         return gegner;
     }
-    public String[] gibRumliegendeItems()
+    public void setzeGegner(ArrayList<Gegner> gegner)
+    {
+        this.gegner = gegner;
+    }
+    public Item[] gibRumliegendeItems()
     {
         return rumliegendeItems;
+    }
+    public Item[] nehmeRumliegendeItems()
+    {
+        Item[] items = rumliegendeItems;
+        rumliegendeItems = new Item[0];
+        return items;
+    }
+    public void setzeRumliegendeItems(Item[] items)
+    {
+        rumliegendeItems = items;
     }
 }

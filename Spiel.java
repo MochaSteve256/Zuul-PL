@@ -1,6 +1,8 @@
 import java.util.Scanner;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Arrays;
+import java.util.Iterator;
 /**
  *  Dies ist die Hauptklasse der Anwendung "Die Welt von Zuul".
  *  "Die Welt von Zuul" ist ein sehr einfaches, textbasiertes
@@ -27,6 +29,7 @@ public class Spiel
     private Spieler charakter;
 
     private Raum draussen, eingangshof, verwinkelteBibliothek, thronsaal, verfallenerKerker, flur, keller;
+    private Item schluessel, schwert, laubpuster, heiltrank;
         
     /**
      * Erzeuge ein Spiel und initialisiere die interne Raumkarte.
@@ -38,10 +41,10 @@ public class Spiel
 
     public Spiel() 
     {
+        itemsAnlegen();
         raeumeAnlegen();
         parser = new Parser();
         charakter = new Spieler(nameGeben());
-        charakter.gibInventar().addItem("Schlüssel");
         spielen();
     }
     private String nameGeben()
@@ -60,13 +63,13 @@ public class Spiel
     {
 
         // die R�ume erzeugen
-        draussen = new Raum("im nebeligen Wald", "im nebeligen Wald, wo das Rauschen der Blätter im Wind zu hören ist", new String[]{"Laubpuster"}, new ArrayList<Gegner>(List.of(new Gegner("Hanswurst", 3, 1))));
-        eingangshof = new Raum("im verfallenen Eingangshof", "im verfallenen Eingangshof der alten Burgruine, umgeben von hohen Mauern und dichtem Nebel", new String[]{}, new ArrayList<Gegner>());
-        flur = new Raum("im düsteren Flur", "im düsteren Flur zwischen dem Eingangshof und dem Thronsaal", new String[]{}, new ArrayList<Gegner>());
-        verwinkelteBibliothek = new Raum("in einer verwinkelten Bibliothek", "in einer verwinkelten Bibliothek, in der vergilbte Bücher und geheime Schriften verstauben", new String[]{}, new ArrayList<Gegner>());
-        thronsaal = new Raum("im majestätischen Thronsaal", "im majestätischen Thronsaal, wo einst der König herrschte, nun aber der große böse Rittergeist Sir Moros sein Unwesen treibt", new String[]{}, new ArrayList<Gegner>());
-        verfallenerKerker = new Raum("im verfallenen Kerker", "in einem verfallenen Kerker, wo düstere Gestalten ihre Spuren hinterlassen haben", new String[]{}, new ArrayList<Gegner>());
-        keller = new Raum("im kalten Kellergang", "in einem kalten Kellergang unter der alten Burgruine, mit feuchten Steinwänden", new String[]{}, new ArrayList<Gegner>());
+        draussen = new Raum("im nebeligen Wald", "im nebeligen Wald, wo das Rauschen der Blätter im Wind zu hören ist", new Item[]{laubpuster}, new ArrayList<Gegner>());
+        eingangshof = new Raum("im verfallenen Eingangshof", "im verfallenen Eingangshof der alten Burgruine, umgeben von hohen Mauern und dichtem Nebel", new Item[]{}, new ArrayList<Gegner>(List.of(new Gegner("Hanswurst", 3, 1, schluessel))));
+        flur = new Raum("im düsteren Flur", "im düsteren Flur zwischen dem Eingangshof und dem Thronsaal", new Item[]{}, new ArrayList<Gegner>());
+        verwinkelteBibliothek = new Raum("in einer verwinkelten Bibliothek", "in einer verwinkelten Bibliothek, in der vergilbte Bücher und geheime Schriften verstauben", new Item[]{}, new ArrayList<Gegner>());
+        thronsaal = new Raum("im majestätischen Thronsaal", "im majestätischen Thronsaal, wo einst der König herrschte, nun aber der große böse Rittergeist Sir Moros sein Unwesen treibt", new Item[]{}, new ArrayList<Gegner>(List.of(new Gegner("Sir Moros", 10, 4, null))));
+        verfallenerKerker = new Raum("im verfallenen Kerker", "in einem verfallenen Kerker, wo düstere Gestalten ihre Spuren hinterlassen haben", new Item[]{}, new ArrayList<Gegner>());
+        keller = new Raum("im kalten Kellergang", "in einem kalten Kellergang unter der alten Burgruine, mit feuchten Steinwänden", new Item[]{}, new ArrayList<Gegner>());
 
 
         
@@ -86,6 +89,13 @@ public class Spiel
         flur.setzeAusgang("down", keller, false);
 
         aktuellerRaum = draussen;  // das Spiel startet draussen
+    }
+    private void itemsAnlegen()
+    {
+        schwert = new Item("Schwert", 3, false);
+        schluessel = new Item("Schlüssel", 0, true);
+        laubpuster = new Item("Laubpuster", 1, false);
+        heiltrank = new Item("Heiltrank", 2, true);
     }
 
     /**
@@ -132,8 +142,8 @@ public class Spiel
         {
             System.out.println("Hier liegen folgende Gegenstände herum:");
         }
-        for (String i : aktuellerRaum.gibRumliegendeItems()) {
-            System.out.println(" - " + i);
+        for (Item i : aktuellerRaum.gibRumliegendeItems()) {
+            System.out.println(" - " + i.gibName());
         }
         if (aktuellerRaum.gibGegner().size() > 0)
         {
@@ -146,22 +156,38 @@ public class Spiel
     }
     private void take()
     {
-        for (String i : aktuellerRaum.gibRumliegendeItems()) {
+        for (Item i : aktuellerRaum.nehmeRumliegendeItems()) {
             charakter.gibInventar().addItem(i);
-            System.out.println(" - " + i);
+            System.out.println(" - " + i.gibName());
         }
     }
     private boolean attack(Befehl befehl)
     {
         int schaden = 1;
         //spieler attackiert alle Gegner im Raum
-        for (Gegner g : aktuellerRaum.gibGegner())
+        Iterator<Gegner> it = aktuellerRaum.gibGegner().iterator();
+        while (it.hasNext())
         {
+            Gegner g = it.next();
             g.wirdAngegriffen(schaden);
             if (g.gibHP() > 0)
                 System.out.println(g.gibName() + " wurde mit " + schaden + " DMG angegriffen, er hat nun noch " + g.gibHP() + " HP");
             else
-                System.out.println(g.gibName() + " wurde mit " + schaden + " DMG angegriffen und wurde besiegt");
+            {
+                if (g.gibDrop() == null)
+                {
+                    System.out.println(g.gibName() + " wurde mit " + schaden + " DMG angegriffen und besiegt");
+                }
+                else
+                {
+                    System.out.println(g.gibName() + " wurde mit " + schaden + " DMG angegriffen und besiegt, wobei er " + g.gibDrop().gibName() + " fallen gellassen hat");
+                    aktuellerRaum.setzeRumliegendeItems(Arrays.asList(g.gibDrop()).toArray(new Item[0]));
+                }
+                //entferne den gestorbenen Gegner aus dem Array
+                ArrayList<Gegner> alteGegner = aktuellerRaum.gibGegner();
+                it.remove();
+                aktuellerRaum.setzeGegner(alteGegner);
+            }
         }
         //alle Gegner attackieren spieler
         for (Gegner g : aktuellerRaum.gibGegner()) {
@@ -290,7 +316,7 @@ public class Spiel
         else {
             if (aktuellerRaum.istSchluesselGebraucht(richtung))
             {
-                if (!charakter.gibInventar().useItem("Schlüssel", true))
+                if (!charakter.gibInventar().useItem(schluessel))
                 {
                     System.out.println("Du hast keinen Schlüssel!");
                     raumInfoAusgeben();

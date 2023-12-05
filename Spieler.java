@@ -1,4 +1,3 @@
-import java.util.List;
 public class Spieler {
 
     private int hp = 10;
@@ -7,7 +6,7 @@ public class Spieler {
 
     public Spieler(String name) {
         this.name = name;
-        this.inventar = new Inventar(List.of("Schwert", "Schlüssel", "Laubpuster", "Heiltrank"));
+        this.inventar = new Inventar();
     }
     public String gibName() {
         return name;

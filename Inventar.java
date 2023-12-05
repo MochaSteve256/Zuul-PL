@@ -2,45 +2,49 @@ import java.util.HashMap;
 import java.util.List;
 
 public class Inventar {
-    HashMap<String, Integer> inventory;
-    List<String> possibleItems;
+    HashMap<Item, Integer> inventory;
+    Item selectedItem = null;
 
-    public Inventar(List<String> possibleItems) {
+    public Inventar() {
         this.inventory = new HashMap<>();
-        this.possibleItems = possibleItems;
     }
 
-    public void addItem(String itemName)
+    public void addItem(Item item)
     {
-        if (possibleItems.contains(itemName)) {
-            inventory.put(itemName, inventory.getOrDefault(itemName, 0) + 1);
-        }
+        inventory.put(item, inventory.getOrDefault(item, 0) + 1);
+        selectedItem = item;
     }
-    public boolean useItem(String itemName, boolean singleUse)
+    public boolean selectItem(Item item)
     {
-        if (inventory.containsKey(itemName)) {
-            if (singleUse) {
-                if (inventory.get(itemName) > 0) {
-                    inventory.put(itemName, inventory.get(itemName) - 1);
-                    return true;
-                }
-            }
-            else {
-                return true;
-            }
+        if (inventory.containsKey(item))
+        {
+            selectedItem = item;
+            return true;
         }
         return false;
     }
-    public List<String> schreibeInventar()
+    public boolean useItem(Item item)
+    {
+        inventory.put(item, inventory.get(item) - 1);
+        if (item.gibSingleUse())
+        {
+            if (inventory.get(item) == -1)
+            {
+                inventory.put(item, 0);
+                return false;
+            }
+        }
+        return true;
+    }
+    public void schreibeInventar()
     {
         if (inventory.isEmpty()) {
             System.out.println("Du hast keine Gegenstände im Inventar!");
-            return possibleItems;
+            return;
         }
         System.out.println("Du hast folgende Gegenstände bei dir:");
-        for (String i : inventory.keySet()) {
-            System.out.println(inventory.get(i) + "x " + i);
+        for (Item i : inventory.keySet()) {
+            System.out.println(inventory.get(i) + "x " + i.gibName());
         }
-        return possibleItems;
     }
 }
