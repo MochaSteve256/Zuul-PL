@@ -63,13 +63,13 @@ public class Spiel
     {
 
         // die R�ume erzeugen
-        draussen = new Raum("im nebeligen Wald", "im nebeligen Wald, wo das Rauschen der Blätter im Wind zu hören ist", new Item[]{laubpuster, heiltrank}, new ArrayList<Gegner>());
-        eingangshof = new Raum("im verfallenen Eingangshof", "im verfallenen Eingangshof der alten Burgruine, umgeben von hohen Mauern und dichtem Nebel", new Item[]{}, new ArrayList<Gegner>(List.of(new Gegner("Hanswurst", 2, 1, schluessel, 1, 1))));
-        flur = new Raum("im düsteren Flur", "im düsteren Flur zwischen dem Eingangshof und dem Thronsaal", new Item[]{}, new ArrayList<Gegner>(List.of(new Gegner("Geist", 4, 2, null, 1/3, 3), new Gegner("Ritter Rost", 2, 2, schwert, 1, 1))));
-        verwinkelteBibliothek = new Raum("in einer verwinkelten Bibliothek", "in einer verwinkelten Bibliothek, in der vergilbte Bücher und geheime Schriften verstauben", new Item[]{schluessel, heiltrank}, new ArrayList<Gegner>());
-        thronsaal = new Raum("im majestätischen Thronsaal", "im majestätischen Thronsaal, wo einst der König herrschte, nun aber der große böse Rittergeist Sir Moros sein Unwesen treibt", new Item[]{}, new ArrayList<Gegner>(List.of(new Gegner("Sir Moros", 10, 4, null, 1, 3))));
-        verfallenerKerker = new Raum("im verfallenen Kerker", "in einem verfallenen Kerker, wo düstere Gestalten ihre Spuren hinterlassen haben", new Item[]{}, new ArrayList<Gegner>());
-        keller = new Raum("im kalten Kellergang", "in einem kalten Kellergang unter der alten Burgruine, mit feuchten Steinwänden", new Item[]{}, new ArrayList<Gegner>(List.of(new Gegner("Ritter 2", 3, 2, heiltrank, 1, 1))));
+        draussen = new Raum("im nebeligen Wald.", "im nebeligen Wald, wo das Rauschen der Blätter im Wind zu hören ist.", new Item[]{laubpuster, heiltrank}, new ArrayList<Gegner>());
+        eingangshof = new Raum("im verfallenen Eingangshof.", "im verfallenen Eingangshof der alten Burgruine, umgeben von hohen Mauern und dichtem Nebel.", new Item[]{}, new ArrayList<Gegner>(List.of(new Gegner("Hanswurst", 2, 1, schluessel, 1, 1))));
+        flur = new Raum("im düsteren Flur.", "im düsteren Flur zwischen dem Eingangshof und dem Thronsaal.", new Item[]{}, new ArrayList<Gegner>(List.of(new Gegner("Geist", 4, 2, null, 1/3, 3), new Gegner("Ritter Rost", 2, 2, schwert, 1, 1))));
+        verwinkelteBibliothek = new Raum("in einer verwinkelten Bibliothek.", "in einer verwinkelten Bibliothek, in der vergilbte Bücher und geheime Schriften verstauben.", new Item[]{schluessel, heiltrank}, new ArrayList<Gegner>());
+        thronsaal = new Raum("im majestätischen Thronsaal.", "im majestätischen Thronsaal, wo einst der König herrschte, nun aber der große böse Rittergeist Sir Moros sein Unwesen treibt.", new Item[]{}, new ArrayList<Gegner>(List.of(new Gegner("Sir Moros", 10, 4, null, 1, 3))));
+        verfallenerKerker = new Raum("im verfallenen Kerker.", "in einem verfallenen Kerker, wo düstere Gestalten ihre Spuren hinterlassen haben.", new Item[]{}, new ArrayList<Gegner>());
+        keller = new Raum("im kalten Kellergang.", "in einem kalten Kellergang unter der alten Burgruine, mit feuchten Steinwänden.", new Item[]{}, new ArrayList<Gegner>(List.of(new Gegner("Ritter 2", 3, 2, heiltrank, 1, 1))));
 
 
         
@@ -164,19 +164,20 @@ public class Spiel
     private boolean attackCalculations(Befehl befehl)
     {
         int schaden = 0;
+        boolean beenden = false;
         if (charakter.gibInventar().useItem())
         {
             schaden = charakter.gibInventar().gibGewaehltesItem().gibSchaden();
         }
         else
         {
-            System.out.println("Der ausgewählte Gegenstand ist ungültig, die Attacke wird abgebrochen");
+            System.out.println("Der ausgewählte Gegenstand ist ungültig, die Attacke wird abgebrochen.");
             return false;
         }
 
         if (aktuellerRaum.gibGegner().size() == 0)
         {
-            System.out.println("In diesem Raum gibt es keine Gegner");
+            System.out.println("In diesem Raum gibt es keine Gegner.");
         }
         //spieler attackiert alle Gegner im Raum
         Iterator<Gegner> it = aktuellerRaum.gibGegner().iterator();
@@ -190,16 +191,21 @@ public class Spiel
             else
                 g.wirdAngegriffen(schaden);
             if (g.gibHP() > 0)
-                System.out.println(g.gibName() + " wurde angegriffen, er hat nun noch " + g.gibHP() + " HP");
+                System.out.println(g.gibName() + " wurde angegriffen, er hat nun noch " + g.gibHP() + " HP.");
             else
             {
                 if (g.gibDrop() == null)
                 {
-                    System.out.println(g.gibName() + " wurde angegriffen und besiegt");
+                    System.out.println(g.gibName() + " wurde angegriffen und besiegt.");
+                    if (g.gibName() == "Sir Moros")
+                    {
+                        System.out.println("Glückwunsch, " + charakter.gibName() + "! Du hast das Spiel gewonnen!");
+                        beenden = true;
+                    }
                 }
                 else
                 {
-                    System.out.println(g.gibName() + " wurde mit " + schaden + " DMG angegriffen und besiegt, wobei er " + g.gibDrop().gibName() + " fallen gelassen hat");
+                    System.out.println(g.gibName() + " wurde mit " + schaden + " DMG angegriffen und besiegt, wobei er " + g.gibDrop().gibName() + " fallen gelassen hat.");
                     aktuellerRaum.setzeRumliegendeItems(Arrays.asList(g.gibDrop()).toArray(new Item[0]));
                 }
                 //entferne den gestorbenen Gegner aus dem Array
@@ -213,23 +219,38 @@ public class Spiel
             if (g.gibHP() > 0)
             {
                 g.angreifen(charakter);
-                System.out.println(charakter.gibName() + " wurde von " + g.gibName() + " mit " + g.gibSchaden() + " DMG angegriffen");
+                System.out.println(charakter.gibName() + " wurde von " + g.gibName() + " mit " + g.gibSchaden() + " DMG angegriffen.");
             }
         }
         if (charakter.gibHP() <= 0)
         {
             System.out.println(charakter.gibName() + ", du bist gestorben. :(");
-            return true;
+            beenden = true;
         }
-        System.out.println("Du hast nun " + charakter.gibHP() + " HP");
-        return false;
+        System.out.println("Du hast nun " + charakter.gibHP() + " HP.");
+        return beenden;
     }
     public void apply(Befehl befehl)
     {
         if (charakter.gibInventar().gibGewaehltesItem() != null)
         {
-        charakter.schaden(charakter.gibInventar().gibGewaehltesItem().gibSchaden());
-        System.out.println("Der Gegenstand " + charakter.gibInventar().gibGewaehltesItem().gibName() + " mit " + charakter.gibInventar().gibGewaehltesItem().gibSchaden() + " DMG wurde auf " + charakter.gibName() + " angewendet.");
+            if (charakter.gibInventar().gibGewaehltesItem().gibName() == "Heiltrank")
+            {
+                if (charakter.gibHP() == 10)
+                {
+                    System.out.println("Du hast bereits die maximale HP.");
+                    return;
+                }
+            }
+            if (charakter.gibInventar().useItem())
+            {
+                charakter.schaden(charakter.gibInventar().gibGewaehltesItem().gibSchaden());
+                System.out.println("Der Gegenstand " + charakter.gibInventar().gibGewaehltesItem().gibName() + " mit " + charakter.gibInventar().gibGewaehltesItem().gibSchaden() + " DMG wurde auf " + charakter.gibName() + " angewendet.");
+            }
+            else
+            {
+                System.out.println("Du hast diesen Gegenstand nicht mehr.");
+            }
         }
         else
         {
@@ -240,7 +261,7 @@ public class Spiel
     {
         String desiredItem = befehl.gibZweitesWort();
         if (charakter.gibInventar().selectItem(desiredItem)) {
-            System.out.println("Der Gegenstand wurde ausgewaehlt.");
+            System.out.println("Der Gegenstand wurde ausgewählt.");
         }
         else
         {
@@ -249,7 +270,7 @@ public class Spiel
     }
     public void healthAusgeben()
     {
-        System.out.println("Du hast aktuell " + charakter.gibHP() + " HP");
+        System.out.println("Du hast aktuell " + charakter.gibHP() + " HP.");
     }
 
     /**
@@ -348,7 +369,6 @@ public class Spiel
 
         String richtung = befehl.gibZweitesWort();
 
-        
         Raum naechsterRaum = aktuellerRaum.gibAusgang(richtung);
 
         if (versucheFalltuer(aktuellerRaum, naechsterRaum))
@@ -358,7 +378,7 @@ public class Spiel
             return;
         }
 
-        if (naechsterRaum == null || richtung.equals("down")) {
+        if (naechsterRaum == null) {
             System.out.println("Dort ist keine Tür!");
         }
         else {

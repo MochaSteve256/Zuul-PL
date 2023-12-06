@@ -62,8 +62,8 @@ public class Raum
         Set<String> keys = ausgaenge.keySet();
         for(String ausgang : keys)
         {
-            if (!ausgang.equals("down"))
-                ergebnis += " " + ausgang;
+            //if (!ausgang.equals("down"))
+            ergebnis += " " + ausgang;
         }
         System.out.println(ergebnis);
     }
