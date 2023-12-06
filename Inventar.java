@@ -11,7 +11,6 @@ public class Inventar {
     public void addItem(Item item)
     {
         inventory.put(item, inventory.getOrDefault(item, 0) + 1);
-        selectedItem = item;
     }
     public boolean selectItem(String itemName) {
         for (Item item : inventory.keySet()) {
@@ -25,16 +24,23 @@ public class Inventar {
     
     public boolean useItem()
     {
-        inventory.put(selectedItem, inventory.get(selectedItem) - 1);
+        if (selectedItem == null)
+        {
+            return false;
+        }
         if (selectedItem.gibSingleUse())
         {
+            inventory.put(selectedItem, inventory.get(selectedItem) - 1);
             if (inventory.get(selectedItem) == -1)
             {
                 inventory.put(selectedItem, 0);
                 return false;
             }
+            return true;
         }
-        return true;
+        else if (inventory.containsKey(selectedItem))
+            return true;
+        return false;
     }
     public Item gibGewaehltesItem()
     {
@@ -50,5 +56,9 @@ public class Inventar {
         for (Item i : inventory.keySet()) {
             System.out.println(inventory.get(i) + "x " + i.gibName());
         }
+        if (selectedItem != null)
+            System.out.println("Ausgewählt: " + selectedItem.gibName());
+        else
+            System.out.println("Du hast momentan keinen Gegenstand ausgewählt.");
     }
 }

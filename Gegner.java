@@ -3,12 +3,16 @@ public class Gegner {
     private String name;
     private int schaden;
     private Item drop;
+    private float multiplySchwert;
+    private float multiplyLaubpuster;
 
-    public Gegner(String name, int hp, int schaden, Item drop) {
+    public Gegner(String name, int hp, int schaden, Item drop, float multiplySchwert, float multiplyLaubpuster) {
         this.name = name;
         this.hp = hp;
         this.schaden = schaden;
         this.drop = drop;
+        this.multiplySchwert = multiplySchwert;
+        this.multiplyLaubpuster = multiplyLaubpuster;
     }
     public void wirdAngegriffen(int schaden) {
         hp -= schaden;
@@ -30,5 +34,11 @@ public class Gegner {
     }
     public Item gibDrop() {
         return drop;
+    }
+    public float gibMultiplySchwert() {
+        return multiplySchwert;
+    }
+    public float gibMultiplyLaubpuster() {
+        return multiplyLaubpuster;
     }
 }
