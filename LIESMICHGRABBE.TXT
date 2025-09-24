@@ -1,4 +1,0 @@
-Moin Herr Grabbe, 
-wenn Sie das Spiel starten, bitte nicht mit BlueJ, sondern mit dem normalen Java, da BlueJ die ÄÖÜ-Charaktere irgendwie auswechselt und es dann zu Fehlern kommt.
-Deswegen habe ich package.bluej auch in package.bluejay umbenannt.
-VG, Adrian Steyer
